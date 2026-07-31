@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/tdshank84/FlashCore/schemas/quick-app-catalog.schema.json",
+  "title": "FlashCore Quick App catalog",
+  "type": "object",
+  "required": ["catalogVersion", "vehicle", "market", "firstModelYear", "lastModelYear", "executionPolicy", "compatibilityKeys", "categories"],
+  "properties": {
+    "catalogVersion": { "type": "string", "minLength": 1 },
+    "vehicle": { "type": "string", "minLength": 1 },
+    "market": { "type": "string", "minLength": 1 },
+    "firstModelYear": { "type": "integer", "minimum": 1900 },
+    "lastModelYear": { "type": "integer", "minimum": 1900 },
+    "executionPolicy": { "const": "catalog-only" },
+    "compatibilityKeys": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "categories": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "apps"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "apps": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

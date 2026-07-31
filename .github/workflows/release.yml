@@ -1,0 +1,46 @@
+name: Release Artifacts
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    strategy:
+      fail-fast: false
+      matrix:
+        runtime: [win-x64, linux-x64, linux-arm64, osx-x64, osx-arm64]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore src/FlashCore.Console/FlashCore.Console.csproj --runtime ${{ matrix.runtime }}
+
+      - name: Publish
+        run: >-
+          dotnet publish src/FlashCore.Console/FlashCore.Console.csproj
+          --configuration Release
+          --runtime ${{ matrix.runtime }}
+          --self-contained false
+          --no-restore
+          --output artifacts/FlashCore-1.0.8-${{ matrix.runtime }}
+
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: FlashCore-1.0.8-${{ matrix.runtime }}
+          path: artifacts/FlashCore-1.0.8-${{ matrix.runtime }}
+          if-no-files-found: error

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/tdshank84/FlashCore/schemas/simos18-profile.schema.json",
+  "title": "FlashCore signed Simos18 ECU profile",
+  "type": "object",
+  "required": ["profile"],
+  "properties": {
+    "profile": {
+      "type": "object",
+      "required": ["name", "hardwareNumber", "bootloaderIdentifier", "eraseRoutineId", "loaderAddress", "sampleModeDid", "unlockLoaderPath"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "hardwareNumber": { "type": "string", "minLength": 1 },
+        "bootloaderIdentifier": { "type": "string", "minLength": 1 },
+        "eraseRoutineId": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "loaderAddress": { "type": "integer", "minimum": 1, "maximum": 4294967295 },
+        "sampleModeDid": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "unlockLoaderPath": { "type": "string", "minLength": 1 },
+        "protocolValidated": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "signature": { "type": ["string", "null"] }
+  },
+  "additionalProperties": false
+}

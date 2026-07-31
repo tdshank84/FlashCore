@@ -1,0 +1,40 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore FlashCore.sln
+
+      - name: Audit dependencies
+        run: dotnet list FlashCore.sln package --vulnerable --include-transitive
+
+      - name: Verify formatting
+        run: dotnet format FlashCore.sln --verify-no-changes --no-restore
+
+      - name: Build
+        run: dotnet build FlashCore.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test FlashCore.sln --configuration Release --no-build --logger "console;verbosity=normal"
